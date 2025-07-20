@@ -1,0 +1,137 @@
+
+# 📘 Japanese Learning Web Application - Functional Design
+
+## 🎯 Objective
+
+To help Japanese learners improve their listening comprehension and contextual understanding using interactive **YouTube videos**, **transcripts**, and **quizzes**.
+
+---
+
+## 🔧 Technical Stack
+
+* **Framework**: Vue.js (Composition API)
+* **Language**: TypeScript
+* **Styling**: Tailwind CSS
+* **Data Sources**:
+
+  * `data/video.json`: YouTube video metadata
+  * `data/transcript.txt`: Timestamped transcript
+  * `data/questions.json`: Quiz questions and explanations
+
+---
+
+## 🧩 Functional Modules
+
+### 1. **Video Display Module**
+
+#### Features
+
+* Load and embed YouTube video using `url` from `video.json`
+* Display the video title
+* Synchronize video playback time with transcript display
+
+---
+
+### 2. **Transcript Viewer Module**
+
+#### Features
+
+* Read `transcript.txt` with format like:
+
+  ```
+  [ 0m0s96ms - 0m1s166ms ] はい。
+  ```
+
+* Parse each line to extract:
+
+  * **Start time** and **end time**, accurate to milliseconds
+
+    * `0m0s96ms` → 0 minutes, 0 seconds, 96 milliseconds = **0.096 seconds**
+    * `0m1s166ms` → 1 second, 166 milliseconds = **1.166 seconds**
+  * **Text content** (e.g., `はい。`)
+
+* Display transcript line-by-line
+
+* Highlight current line based on video playback timestamp
+
+* **✅ Click-to-seek**: Clicking a line jumps to its start timestamp in the video and continues playing
+
+---
+
+### 3. **Quiz Module**
+
+#### Features
+
+* Read from `questions.json` with format like:
+
+  ```json
+  {
+    "question": "この会話の最初で、男性はどこに来ましたか？",
+    "choices": ["レストラン", "結婚相談所", "美容室", "病院"],
+    "answer": 1,
+    "difficulty": "easy",
+    "explanation": "男性は「これ結婚相談所？」と確認しており、訪れた場所が結婚相談所だと分かります。"
+  }
+  ```
+
+* **✅ Display all questions on one page** with scroll navigation between questions
+* Show question numbers (e.g., "Question 1 of 10") and progress indicator
+* For each question:
+
+  * Show the text, choices, and difficulty level
+  * Disable "Check Answer" until a choice is selected
+  * On click:
+
+    * Show ✔️ Correct or ❌ Incorrect
+    * **✅ Show explanation**
+    * **✅ Allow retry** if the answer is incorrect (same choices in same order)
+* **✅ "Jump to unanswered"** functionality for easy navigation
+
+---
+
+### 4. **Progress Tracking Module**
+
+#### Features
+
+* Track user progress using `localStorage`:
+
+  * Video watched status
+  * **✅ Detailed quiz progress**: Track which specific questions are answered correctly/incorrectly
+  * **✅ Enhanced tracking structure**:
+    ```json
+    {
+      "videoWatched": boolean,
+      "quizProgress": {
+        "questionId": {
+          "attempts": number,
+          "correct": boolean,
+          "lastAnswer": number
+        }
+      }
+    }
+    ```
+* Display visual indicators (e.g., checkmarks, progress bars, completion status)
+
+---
+
+### 5. **User Interface Design**
+
+#### Features
+
+* Clean, modern, and mobile-responsive UI using Tailwind CSS
+* **Desktop Layout**:
+  * **Top**: Embedded video with title
+  * **Right**: Transcript panel
+  * **Bottom**: Quiz section
+* **✅ Mobile-Optimized Layout**:
+  * **Portrait**: Stack video → transcript → quiz vertically
+  * **✅ Collapsible transcript panel** with toggle button to maximize video space
+  * **✅ Sticky video controls** accessible when scrolling
+  * **✅ Touch-friendly design** with larger tap targets for transcript lines and quiz buttons
+  * **✅ Responsive text sizing** for optimal readability on small screens
+  * **✅ Optional swipe gestures** between questions
+* **✅ Subtle animations** for:
+  * Transcript scrolling
+  * Feedback transitions (e.g., correct/incorrect animations)
+  * Button and toggle effects
+  * Mobile panel transitions

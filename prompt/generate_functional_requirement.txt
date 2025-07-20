@@ -1,0 +1,18 @@
+I want to create an web application that helps Japanese learner to improve their Japanes.
+Below are the Functional requirement and Technical requirement I'm thinking of, please organize them into functional design of the web application.
+If you have any questions, please ask me back.
+Please also suggest improvement of the functions to achieve the goal: to help Japanese learner to improve their Japanese.
+
+Please out put the result in Markdown format.
+
+# Fuctional requirement
+- The web application reads the video config in the data/video.json and displays the video on the screen.
+- The web application reads the transcript(including timestamp) of video in data/transcript.txt and displays the transcript and timestamp side by side with the video.
+- When user plays the video, the web application highlights the corresponding part of the transcript.
+- The web application displays questions and their choices in the data/questions.json, which is related to the video.
+- Each question has a single correct answer which is also in the data/questions.json.
+- Display a check answer button for each question. If user hasn't selected an answer, the button is disabled. When  user clicks the button, the web application checks the answer and show if the answer is correct or not.
+
+# Technical requirement
+- The web application is built with Vuejs, typescript, and tailwindcss.
+- The web application page must be carefully designed to be easy to use and intuitive, while keeping it beautiful and modern.
