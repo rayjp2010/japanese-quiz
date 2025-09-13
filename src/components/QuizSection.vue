@@ -2,8 +2,17 @@
   <div class="quiz-section-container">
     <!-- Quiz Navigation Header -->
     <div class="quiz-navigation-header">
-      <div class="question-counter">
-        Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+      <div class="header-top-row">
+        <div class="question-counter">
+          Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+        </div>
+        <button
+          @click="jumpToUnanswered"
+          class="jump-btn"
+          :disabled="!hasUnanswered"
+        >
+          Jump to Next Unanswered
+        </button>
       </div>
       <div class="quiz-progress-mini">
         <div class="progress-dots">
@@ -14,8 +23,10 @@
             :class="{
               'completed': questionStates[index]?.checked && questionStates[index]?.correct,
               'attempted': questionStates[index]?.checked && !questionStates[index]?.correct,
-              'current': index === currentQuestionIndex
+              'current': index === currentQuestionIndex,
+              'clickable': isDotClickable(index)
             }"
+            @click="jumpToQuestion(index)"
           ></div>
         </div>
         <div class="progress-text">
@@ -138,24 +149,12 @@
         🔄 Restart Quiz
       </button>
     </div>
-
-    <!-- Quick Navigation -->
-    <div class="quick-navigation">
-      <button
-        @click="jumpToUnanswered"
-        class="action-btn"
-        :disabled="!hasUnanswered"
-      >
-        Jump to Next Unanswered
-      </button>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import type { Question } from '@/types'
-import { useProgress } from '@/composables/useProgress'
 import { useParticles } from '@/composables/useParticles'
 
 interface Props {
@@ -164,7 +163,11 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { updateQuestionProgress, getQuestionProgress } = useProgress()
+// Define emits for progress tracking
+const emit = defineEmits<{
+  progressUpdate: [{ answeredCount: number, correctCount: number, totalQuestions: number }]
+}>()
+
 const { createSuccessParticles, showNotification } = useParticles()
 
 const selectedAnswers = ref<Record<number, number>>({})
@@ -200,6 +203,15 @@ const hasUnanswered = computed(() => {
   return answeredCount.value < props.questions.length
 })
 
+// Emit progress updates whenever progress changes
+const emitProgressUpdate = () => {
+  emit('progressUpdate', {
+    answeredCount: answeredCount.value,
+    correctCount: correctCount.value,
+    totalQuestions: props.questions.length
+  })
+}
+
 const getOptionLetter = (index: number) => {
   return String.fromCharCode(65 + index) // A, B, C, D
 }
@@ -221,7 +233,7 @@ const checkAnswer = () => {
     correct: isCorrect
   }
 
-  updateQuestionProgress(currentQuestionIndex.value, isCorrect, selectedChoice)
+  emitProgressUpdate()
   
   if (isCorrect) {
     createSuccessParticles()
@@ -237,12 +249,14 @@ const resetCurrentQuestion = () => {
   questionStates.value[currentQuestionIndex.value] = { checked: false, correct: false }
   delete selectedAnswers.value[currentQuestionIndex.value]
   showNotification('🔄 Question reset! Select your answer again.', 'info')
+  emitProgressUpdate()
 }
 
 const nextQuestion = () => {
   if (currentQuestionIndex.value < props.questions.length - 1) {
     currentQuestionIndex.value++
     showNotification(`Question ${currentQuestionIndex.value + 1}`, 'info')
+    emitProgressUpdate()
   }
 }
 
@@ -250,6 +264,7 @@ const previousQuestion = () => {
   if (currentQuestionIndex.value > 0) {
     currentQuestionIndex.value--
     showNotification(`Question ${currentQuestionIndex.value + 1}`, 'info')
+    emitProgressUpdate()
   }
 }
 
@@ -258,6 +273,7 @@ const jumpToUnanswered = () => {
     if (!questionStates.value[i]?.checked) {
       currentQuestionIndex.value = i
       showNotification(`Jumped to question ${i + 1}`, 'info')
+      emitProgressUpdate()
       return
     }
   }
@@ -288,6 +304,7 @@ const restartQuiz = () => {
   currentQuestionIndex.value = 0
   isQuizCompleted.value = false
   showNotification('Quiz restarted! Good luck! 🍀', 'info')
+  emitProgressUpdate()
 }
 
 const getChoiceClass = (choiceIndex: number) => {
@@ -343,21 +360,25 @@ const getDifficultyClass = (difficulty: string) => {
   }
 }
 
-const loadPreviousProgress = () => {
-  props.questions.forEach((_, index) => {
-    const progress = getQuestionProgress(index)
-    if (progress) {
-      selectedAnswers.value[index] = progress.lastAnswer
-      questionStates.value[index] = {
-        checked: true,
-        correct: progress.correct
-      }
+
+
+const isDotClickable = (index: number) => {
+  const state = questionStates.value[index]
+  return state?.checked || index === currentQuestionIndex.value
+}
+
+const jumpToQuestion = (index: number) => {
+  if (isDotClickable(index)) {
+    if (index !== currentQuestionIndex.value) {
+      currentQuestionIndex.value = index
+      showNotification(`Jumped to question ${index + 1}`, 'info')
+      emitProgressUpdate()
     }
-  })
+  }
 }
 
 onMounted(() => {
-  loadPreviousProgress()
+  emitProgressUpdate() // Emit initial progress on mount
 })
 </script>
 
@@ -376,11 +397,47 @@ onMounted(() => {
   box-shadow: var(--shadow-soft);
 }
 
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .question-counter {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--primary);
-  margin-bottom: 1rem;
+}
+
+.jump-btn {
+  background: var(--muted);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.jump-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.jump-btn:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border-color: var(--border);
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .quiz-progress-mini {
@@ -418,6 +475,17 @@ onMounted(() => {
   background: var(--primary);
   border-color: var(--primary);
   transform: scale(1.2);
+}
+
+.progress-dot.clickable {
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.progress-dot.clickable:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: scale(1.3);
 }
 
 .progress-text {
@@ -723,13 +791,6 @@ onMounted(() => {
   margin-top: 0.5rem;
 }
 
-/* Quick Navigation */
-.quick-navigation {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .answers-grid {
@@ -764,8 +825,18 @@ onMounted(() => {
     padding: 1rem;
   }
 
+  .header-top-row {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
   .progress-dots {
     justify-content: center;
+  }
+
+  .jump-btn {
+    align-self: center;
   }
 }
 </style>

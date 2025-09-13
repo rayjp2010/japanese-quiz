@@ -73,18 +73,7 @@
         </div>
 
         <!-- Quiz Component -->
-        <QuizSection :questions="questions" />
-
-        <!-- Progress Bar -->
-        <div class="quiz-progress">
-          <div class="progress-bar-container" style="background: var(--muted); height: 8px; border-radius: 4px; margin-top: 2rem; overflow: hidden; border: 2px solid var(--border);">
-            <div class="progress-bar-fill" :style="progressBarStyle"></div>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted-foreground);">
-            <span>Progress: {{ answeredQuestions }}/{{ totalQuestions }}</span>
-            <span>{{ completionPercentage }}% Complete</span>
-          </div>
-        </div>
+        <QuizSection :questions="questions" @progress-update="handleProgressUpdate" />
       </div>
     </section>
 
@@ -106,7 +95,6 @@ import VideoPlayer from '@/components/VideoPlayer.vue'
 import TranscriptViewer from '@/components/TranscriptViewer.vue'
 import QuizSection from '@/components/QuizSection.vue'
 import { loadTranscript } from '@/utils/transcriptParser'
-import { useProgress } from '@/composables/useProgress'
 import { useTheme } from '@/composables/useTheme'
 import { useParticles } from '@/composables/useParticles'
 import type { VideoData, TranscriptLine, Question } from '@/types'
@@ -120,35 +108,19 @@ const currentTime = ref(0)
 
 const videoPlayerRef = ref()
 
-const { 
-  answeredQuestions, 
-  totalQuestions, 
-  correctAnswers, 
-  completionPercentage,
-  markVideoWatched 
-} = useProgress()
+// Local progress tracking (no localStorage)
+const answeredQuestions = ref(0)
+const correctAnswers = ref(0)
+const totalQuestions = computed(() => questions.value.length)
+const completionPercentage = computed(() => {
+  return totalQuestions.value > 0 ? Math.round((answeredQuestions.value / totalQuestions.value) * 100) : 0
+})
 
 const { isDarkMode, toggleTheme } = useTheme()
 const { createParticleSystem, stopParticleSystem } = useParticles()
 
-const progressBarStyle = computed(() => {
-  const percentage = completionPercentage.value
-  return {
-    height: '100%',
-    background: 'linear-gradient(90deg, var(--primary), var(--accent))',
-    width: `${percentage}%`,
-    transition: 'width 0.5s ease',
-    boxShadow: '0 0 10px var(--primary)'
-  }
-})
-
 const handleTimeUpdate = (time: number) => {
   currentTime.value = time
-  
-  // Mark video as watched if user has watched for more than 30 seconds
-  if (time > 30) {
-    markVideoWatched()
-  }
 }
 
 const handleSeek = (time: number) => {
@@ -187,9 +159,6 @@ const loadData = async () => {
     videoData.value = await videoResponse.json()
     transcript.value = transcriptData
     questions.value = await questionsResponse.json()
-    
-    // Set total questions count for progress tracking
-    totalQuestions.value = questions.value.length
 
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Failed to load data'
@@ -197,6 +166,11 @@ const loadData = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const handleProgressUpdate = (progress: { answeredCount: number; correctCount: number; totalQuestions: number }) => {
+  answeredQuestions.value = progress.answeredCount
+  correctAnswers.value = progress.correctCount
 }
 
 onMounted(() => {
