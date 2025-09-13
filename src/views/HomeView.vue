@@ -80,7 +80,9 @@
     <!-- Floating Action Buttons -->
     <div class="floating-actions" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;">
       <button class="control-button" @click="toggleFullscreen" title="Fullscreen Mode" style="margin-bottom: 1rem; display: block;">
-        🔍
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>
       </button>
     </div>
 
@@ -121,6 +123,11 @@ const { createParticleSystem, stopParticleSystem } = useParticles()
 
 const handleTimeUpdate = (time: number) => {
   currentTime.value = time
+}
+
+const handleProgressUpdate = (progress: { answeredCount: number; correctCount: number; totalQuestions: number }) => {
+  answeredQuestions.value = progress.answeredCount
+  correctAnswers.value = progress.correctCount
 }
 
 const handleSeek = (time: number) => {
@@ -166,11 +173,6 @@ const loadData = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const handleProgressUpdate = (progress: { answeredCount: number; correctCount: number; totalQuestions: number }) => {
-  answeredQuestions.value = progress.answeredCount
-  correctAnswers.value = progress.correctCount
 }
 
 onMounted(() => {

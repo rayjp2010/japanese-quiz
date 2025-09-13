@@ -549,7 +549,7 @@ onMounted(() => {
 /* Answers Grid */
 .answers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -794,7 +794,7 @@ onMounted(() => {
 /* Responsive Design */
 @media (max-width: 768px) {
   .answers-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
   }
 
