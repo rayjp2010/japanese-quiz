@@ -1,56 +1,29 @@
 <template>
-  <div class="video-container">
-    <h2 class="text-xl font-bold mb-4 text-gray-800">{{ videoData?.title }}</h2>
-    <div class="relative w-full" style="aspect-ratio: 16/9;">
+  <div class="video-player-container">
+    <!-- Video Wrapper -->
+    <div class="video-wrapper">
       <div
         v-if="props.videoData?.url"
         id="player-container"
         ref="playerContainer"
-        class="w-full h-full rounded-lg shadow-lg bg-black"
+        class="w-full h-full rounded-lg bg-black"
       ></div>
     </div>
-    <!-- Custom video controls -->
-    <div class="mt-4 p-3 bg-gray-100 rounded-lg">
-      <!-- Play/Pause and video controls -->
-      <div class="flex items-center gap-4 mb-3">
-        <button
-          @click="togglePlayPause"
-          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-          :disabled="!playerReady"
-        >
-          {{ isPlaying ? '⏸️ Pause' : '▶️ Play' }}
-        </button>
-        <button
-          @click="rewindVideo"
-          class="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-          :disabled="!playerReady"
-        >
-          ⏪ -10s
-        </button>
-        <button
-          @click="forwardVideo"
-          class="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-          :disabled="!playerReady"
-        >
-          ⏩ +10s
-        </button>
-      </div>
-      <!-- Progress bar synced with video -->
-      <div class="flex items-center gap-4">
-        <label class="text-sm text-gray-600 whitespace-nowrap">Progress:</label>
-        <input
-          type="range"
-          :min="0"
-          :max="maxTime"
-          :step="0.1"
-          v-model="currentTime"
-          @input="handleTimeChange"
-          class="flex-1"
-        />
-        <span class="text-sm text-gray-600 whitespace-nowrap">
-          {{ formatTime(currentTime) }} / {{ formatTime(maxTime) }}
-        </span>
-      </div>
+
+    <!-- Professional Video Controls -->
+    <div class="video-controls">
+      <button class="video-btn" @click="togglePlayPause" id="playBtn" :disabled="!playerReady">
+        {{ isPlaying ? '⏸️' : '▶️' }} {{ isPlaying ? 'PAUSE' : 'PLAY' }}
+      </button>
+      <button class="video-btn" @click="rewindVideo" :disabled="!playerReady">
+        ⏪ -10s
+      </button>
+      <button class="video-btn" @click="forwardVideo" :disabled="!playerReady">
+        ⏩ +10s
+      </button>
+      <button class="video-btn" @click="toggleMute" id="muteBtn" :disabled="!playerReady">
+        {{ isMuted ? '🔇' : '🔊' }} {{ isMuted ? 'MUTED' : 'AUDIO' }}
+      </button>
     </div>
   </div>
 </template>
@@ -75,6 +48,7 @@ const currentTime = ref(0)
 const maxTime = ref(480) // 8 minutes max based on transcript
 const playerReady = ref(false)
 const isPlaying = ref(false)
+const isMuted = ref(false)
 
 let player: any = null
 let timeUpdateInterval: number | null = null
@@ -127,6 +101,18 @@ const forwardVideo = () => {
   currentTime.value = newTime
   player.seekTo(newTime)
   emit('timeUpdate', newTime)
+}
+
+const toggleMute = () => {
+  if (!player || !playerReady.value) return
+
+  if (isMuted.value) {
+    player.unMute()
+    isMuted.value = false
+  } else {
+    player.mute()
+    isMuted.value = true
+  }
 }
 
 const seekTo = (time: number) => {
@@ -350,3 +336,76 @@ defineExpose({
   seekTo
 })
 </script>
+
+<style scoped>
+.video-player-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--muted);
+}
+
+.video-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.video-btn {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: 1px solid var(--primary) !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: var(--radius) !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.video-btn:hover:not(:disabled) {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+.video-btn:active:not(:disabled) {
+  transform: translateY(1px) !important;
+}
+
+.video-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+@media (max-width: 1200px) {
+  .video-wrapper {
+    height: 300px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-controls {
+    gap: 0.5rem !important;
+  }
+
+  .video-btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
+}
+</style>

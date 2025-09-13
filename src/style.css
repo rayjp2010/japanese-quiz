@@ -1,78 +1,261 @@
+/* Modern Japanese Quiz - Professional Business Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+
+:root {
+  /* Professional Business color scheme - Dark Mode */
+  --background: #0f1419;
+  --foreground: #ffffff;
+  --card: #1a1f2e;
+  --card-foreground: #ffffff;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #64748b;
+  --secondary-foreground: #ffffff;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --border: #334155;
+  --destructive: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+
+  /* Japanese theme colors */
+  --sakura: #3b82f6;
+  --navy: #1e293b;
+  --gold: #f59e0b;
+
+  /* Typography */
+  --font-mono: 'Inter', sans-serif;
+  --font-japanese: 'Noto Sans JP', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+
+  /* Spacing & sizing */
+  --radius: 8px;
+  --spacing: 1rem;
+
+  /* Shadows & effects */
+  --shadow-brutal: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  --shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+  /* Animations */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.3s ease-out;
+  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Light mode theme */
+.light-mode {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #f8fafc;
+  --card-foreground: #0f172a;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #64748b;
+  --secondary-foreground: #ffffff;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  --destructive: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  --sakura: #3b82f6;
+  --navy: #1e293b;
+  --gold: #f59e0b;
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  line-height: 1.6 !important;
+  overflow-x: hidden !important;
+  transition: all var(--transition-normal) !important;
+}
+
+/* Typography */
+.japanese-text {
+  font-family: var(--font-japanese) !important;
+  font-weight: 500 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans) !important;
+  font-weight: 600 !important;
+  color: var(--foreground) !important;
+}
+
+/* Animations */
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Utility classes */
 .fade-in {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.6s ease-out !important;
 }
 
 .slide-in {
-  animation: slideIn 0.4s ease-out;
+  animation: slideIn 0.8s ease-out !important;
 }
 
-.pulse-once {
-  animation: pulse 0.3s ease-in-out;
+/* Particle effects */
+.particle-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 9998 !important;
 }
 
-/* Smooth transitions for interactive elements */
-.transition-smooth {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+.particle {
+  position: absolute !important;
+  width: 2px !important;
+  height: 2px !important;
+  background: var(--accent) !important;
+  border-radius: 50% !important;
+  animation: particleFall 6s linear infinite !important;
 }
 
-/* Custom scrollbar for transcript */
-.transcript-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.transcript-content::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 3px;
-}
-
-.transcript-content::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-
-.transcript-content::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Mobile-specific styles */
-@media (max-width: 768px) {
-  .mobile-panel-transition {
-    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+@keyframes particleFall {
+  to {
+    transform: translateY(100vh) !important;
+    opacity: 0 !important;
   }
+}
+
+/* Professional component base styles */
+.app-container {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.control-button {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: var(--radius) !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.control-button:hover {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 10, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--muted);
+  border-top: 4px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.notification-container {
+  position: fixed;
+  top: 100px;
+  right: 2rem;
+  z-index: 1001;
+}
+
+/* Responsive design utilities */
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    padding: 0 1rem !important;
+    margin: 1rem auto !important;
+  }
+}
+
+/* Default Tailwind and override styles */
+.bg-gray-100 {
+  background-color: var(--background) !important;
+}
+
+.bg-white {
+  background-color: var(--card) !important;
+}
+
+.text-gray-900 {
+  color: var(--foreground) !important;
+}
+
+.text-gray-800 {
+  color: var(--foreground) !important;
+}
+
+.text-gray-700 {
+  color: var(--foreground) !important;
+}
+
+.text-gray-600 {
+  color: var(--muted-foreground) !important;
+}
+
+.border-gray-200 {
+  border-color: var(--border) !important;
+}
+
+.shadow-sm,
+.shadow-lg {
+  box-shadow: var(--shadow-soft) !important;
 }

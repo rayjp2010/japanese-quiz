@@ -1,110 +1,153 @@
 <template>
-  <div class="quiz-section bg-white rounded-lg shadow-lg p-6">
-    <div class="quiz-header mb-6">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold text-gray-800">Quiz</h3>
-        <div class="flex gap-2">
-          <button
-            @click="jumpToUnanswered"
-            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm transition-colors"
-            :disabled="!hasUnanswered"
-          >
-            Jump to Unanswered
-          </button>
+  <div class="quiz-section-container">
+    <!-- Quiz Navigation Header -->
+    <div class="quiz-navigation-header">
+      <div class="question-counter">
+        Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+      </div>
+      <div class="quiz-progress-mini">
+        <div class="progress-dots">
+          <div
+            v-for="(_, index) in questions"
+            :key="index"
+            class="progress-dot"
+            :class="{
+              'completed': questionStates[index]?.checked && questionStates[index]?.correct,
+              'attempted': questionStates[index]?.checked && !questionStates[index]?.correct,
+              'current': index === currentQuestionIndex
+            }"
+          ></div>
         </div>
-      </div>
-      
-      <div class="progress-bar bg-gray-200 rounded-full h-2 mb-4">
-        <div 
-          class="bg-blue-500 h-2 rounded-full transition-all duration-300"
-          :style="{ width: progressPercentage + '%' }"
-        ></div>
-      </div>
-      
-      <div class="text-sm text-gray-600">
-        Progress: {{ answeredCount }}/{{ questions.length }} questions completed
-        ({{ correctCount }} correct)
+        <div class="progress-text">
+          {{ answeredCount }}/{{ questions.length }} completed • {{ correctCount }} correct
+        </div>
       </div>
     </div>
 
-    <div class="questions-container space-y-8 max-h-96 overflow-y-auto">
-      <div
-        v-for="(question, index) in questions"
-        :key="index"
-        :id="`question-${index}`"
-        class="question-card border rounded-lg p-4 transition-all duration-200"
-        :class="getQuestionCardClass(index)"
-      >
-        <div class="question-header mb-4">
+    <!-- Single Question Display -->
+    <div class="current-question-container" v-if="currentQuestion">
+      <div class="question-card">
+        <div class="question-header">
           <div class="flex justify-between items-start mb-2">
-            <h4 class="text-lg font-semibold text-gray-800">
-              Question {{ index + 1 }} of {{ questions.length }}
-            </h4>
             <span 
-              class="difficulty-badge px-2 py-1 rounded text-xs font-medium"
-              :class="getDifficultyClass(question.difficulty)"
+              class="difficulty-badge"
+              :class="getDifficultyClass(currentQuestion.difficulty)"
             >
-              {{ question.difficulty }}
+              {{ currentQuestion.difficulty }}
             </span>
           </div>
-          <p class="text-gray-700 mb-4">{{ question.question }}</p>
+          <div class="question-text">
+            <span>{{ currentQuestion.question }}</span>
+          </div>
         </div>
 
-        <div class="choices-container mb-4">
+        <div class="answers-grid">
           <div
-            v-for="(choice, choiceIndex) in question.choices"
+            v-for="(choice, choiceIndex) in currentQuestion.choices"
             :key="choiceIndex"
-            @click="selectChoice(index, choiceIndex)"
-            class="choice-option p-3 mb-2 border rounded cursor-pointer transition-all duration-200"
-            :class="getChoiceClass(index, choiceIndex)"
+            @click="selectChoice(choiceIndex)"
+            class="answer-option"
+            :class="getChoiceClass(choiceIndex)"
+            :data-option="getOptionLetter(choiceIndex)"
           >
-            <div class="flex items-center">
-              <div 
-                class="choice-indicator w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center"
-                :class="getChoiceIndicatorClass(index, choiceIndex)"
-              >
-                <div v-if="selectedAnswers[index] === choiceIndex" class="w-2 h-2 bg-current rounded-full"></div>
-              </div>
-              <span>{{ choice }}</span>
-            </div>
+            <span class="option-label" :class="getChoiceIndicatorClass(choiceIndex)">
+              {{ getOptionLetter(choiceIndex) }}
+            </span>
+            <span class="option-text japanese-text">{{ choice }}</span>
           </div>
         </div>
 
-        <div class="question-actions mb-4">
+        <div class="action-buttons">
           <button
-            @click="checkAnswer(index)"
-            :disabled="selectedAnswers[index] === undefined || questionStates[index]?.checked"
-            class="check-btn bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-2 rounded transition-colors mr-2"
+            @click="resetCurrentQuestion"
+            class="action-btn"
+            :disabled="!isCurrentQuestionAnswered"
           >
-            Check Answer
+            🔄 RESET
           </button>
-          
           <button
-            v-if="questionStates[index]?.checked && !questionStates[index]?.correct"
-            @click="retryQuestion(index)"
-            class="retry-btn bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded transition-colors"
+            v-if="!isCurrentQuestionAnswered"
+            @click="checkAnswer"
+            :disabled="!hasSelectedAnswer"
+            class="action-btn primary"
           >
-            Retry
+            ✓ CHECK ANSWER
           </button>
+          <div v-else class="navigation-buttons">
+            <button
+              @click="previousQuestion"
+              class="action-btn"
+              :disabled="currentQuestionIndex === 0"
+            >
+              ← PREVIOUS
+            </button>
+            <button
+              @click="nextQuestion"
+              class="action-btn primary"
+              v-if="currentQuestionIndex < questions.length - 1"
+            >
+              NEXT →
+            </button>
+            <button
+              v-else
+              @click="completeQuiz"
+              class="action-btn success"
+            >
+              🏆 FINISH QUIZ
+            </button>
+          </div>
         </div>
 
-        <div v-if="questionStates[index]?.checked" class="feedback-section fade-in">
+        <div v-if="isCurrentQuestionAnswered" class="feedback-section fade-in">
           <div 
-            class="result-indicator p-3 rounded mb-3 flex items-center"
-            :class="questionStates[index]?.correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+            class="result-indicator"
+            :class="currentQuestionState?.correct ? 'correct' : 'incorrect'"
           >
-            <span class="text-xl mr-2">{{ questionStates[index]?.correct ? '✅' : '❌' }}</span>
-            <span class="font-medium">
-              {{ questionStates[index]?.correct ? 'Correct!' : 'Incorrect' }}
+            <span class="result-icon">{{ currentQuestionState?.correct ? '✅' : '❌' }}</span>
+            <span class="result-text">
+              {{ currentQuestionState?.correct ? 'Correct! Great job!' : 'Incorrect. Try again next time!' }}
             </span>
           </div>
           
-          <div class="explanation bg-blue-50 p-3 rounded">
-            <h5 class="font-medium text-blue-800 mb-1">Explanation:</h5>
-            <p class="text-blue-700">{{ question.explanation }}</p>
+          <div class="explanation">
+            <h5 class="explanation-title">Explanation:</h5>
+            <p class="explanation-text">{{ currentQuestion.explanation }}</p>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Quiz Completion Summary -->
+    <div v-if="isQuizCompleted" class="quiz-completion">
+      <h3 class="completion-title">🎉 Quiz Complete!</h3>
+      <div class="completion-stats">
+        <div class="stat-card">
+          <div class="stat-value">{{ correctCount }}</div>
+          <div class="stat-label">Correct</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ Math.round((correctCount / questions.length) * 100) }}%</div>
+          <div class="stat-label">Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ questions.length }}</div>
+          <div class="stat-label">Total</div>
+        </div>
+      </div>
+      <button @click="restartQuiz" class="action-btn primary">
+        🔄 Restart Quiz
+      </button>
+    </div>
+
+    <!-- Quick Navigation -->
+    <div class="quick-navigation">
+      <button
+        @click="jumpToUnanswered"
+        class="action-btn"
+        :disabled="!hasUnanswered"
+      >
+        Jump to Next Unanswered
+      </button>
     </div>
   </div>
 </template>
@@ -113,6 +156,7 @@
 import { ref, computed, onMounted } from 'vue'
 import type { Question } from '@/types'
 import { useProgress } from '@/composables/useProgress'
+import { useParticles } from '@/composables/useParticles'
 
 interface Props {
   questions: Question[]
@@ -120,10 +164,29 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { updateQuestionProgress, getQuestionProgress, totalQuestions } = useProgress()
+const { updateQuestionProgress, getQuestionProgress } = useProgress()
+const { createSuccessParticles, showNotification } = useParticles()
 
 const selectedAnswers = ref<Record<number, number>>({})
 const questionStates = ref<Record<number, { checked: boolean, correct: boolean }>>({})
+const currentQuestionIndex = ref(0)
+const isQuizCompleted = ref(false)
+
+const currentQuestion = computed(() => {
+  return props.questions[currentQuestionIndex.value] || null
+})
+
+const currentQuestionState = computed(() => {
+  return questionStates.value[currentQuestionIndex.value] || null
+})
+
+const isCurrentQuestionAnswered = computed(() => {
+  return currentQuestionState.value?.checked || false
+})
+
+const hasSelectedAnswer = computed(() => {
+  return selectedAnswers.value[currentQuestionIndex.value] !== undefined
+})
 
 const answeredCount = computed(() => {
   return Object.keys(questionStates.value).filter(key => questionStates.value[parseInt(key)]?.checked).length
@@ -133,108 +196,150 @@ const correctCount = computed(() => {
   return Object.values(questionStates.value).filter(state => state.correct).length
 })
 
-const progressPercentage = computed(() => {
-  return props.questions.length > 0 ? Math.round((answeredCount.value / props.questions.length) * 100) : 0
-})
-
 const hasUnanswered = computed(() => {
   return answeredCount.value < props.questions.length
 })
 
-const selectChoice = (questionIndex: number, choiceIndex: number) => {
-  if (!questionStates.value[questionIndex]?.checked) {
-    selectedAnswers.value[questionIndex] = choiceIndex
+const getOptionLetter = (index: number) => {
+  return String.fromCharCode(65 + index) // A, B, C, D
+}
+
+const selectChoice = (choiceIndex: number) => {
+  if (!isCurrentQuestionAnswered.value) {
+    selectedAnswers.value[currentQuestionIndex.value] = choiceIndex
   }
 }
 
-const checkAnswer = (questionIndex: number) => {
-  const selectedChoice = selectedAnswers.value[questionIndex]
-  if (selectedChoice === undefined) return
+const checkAnswer = () => {
+  const selectedChoice = selectedAnswers.value[currentQuestionIndex.value]
+  if (selectedChoice === undefined || !currentQuestion.value) return
 
-  const question = props.questions[questionIndex]
-  const isCorrect = selectedChoice === question.answer
+  const isCorrect = selectedChoice === currentQuestion.value.answer
 
-  questionStates.value[questionIndex] = {
+  questionStates.value[currentQuestionIndex.value] = {
     checked: true,
     correct: isCorrect
   }
 
-  updateQuestionProgress(questionIndex, isCorrect, selectedChoice)
+  updateQuestionProgress(currentQuestionIndex.value, isCorrect, selectedChoice)
+  
+  if (isCorrect) {
+    createSuccessParticles()
+    showNotification('Correct! Great job! 🎉', 'success')
+  } else {
+    showNotification('Incorrect. The correct answer is highlighted.', 'error')
+  }
 }
 
-const retryQuestion = (questionIndex: number) => {
-  questionStates.value[questionIndex] = { checked: false, correct: false }
-  delete selectedAnswers.value[questionIndex]
+const resetCurrentQuestion = () => {
+  if (!isCurrentQuestionAnswered.value) return
+  
+  questionStates.value[currentQuestionIndex.value] = { checked: false, correct: false }
+  delete selectedAnswers.value[currentQuestionIndex.value]
+  showNotification('🔄 Question reset! Select your answer again.', 'info')
+}
+
+const nextQuestion = () => {
+  if (currentQuestionIndex.value < props.questions.length - 1) {
+    currentQuestionIndex.value++
+    showNotification(`Question ${currentQuestionIndex.value + 1}`, 'info')
+  }
+}
+
+const previousQuestion = () => {
+  if (currentQuestionIndex.value > 0) {
+    currentQuestionIndex.value--
+    showNotification(`Question ${currentQuestionIndex.value + 1}`, 'info')
+  }
 }
 
 const jumpToUnanswered = () => {
   for (let i = 0; i < props.questions.length; i++) {
     if (!questionStates.value[i]?.checked) {
-      const element = document.getElementById(`question-${i}`)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
-      break
+      currentQuestionIndex.value = i
+      showNotification(`Jumped to question ${i + 1}`, 'info')
+      return
     }
   }
 }
 
-const getQuestionCardClass = (index: number) => {
-  const state = questionStates.value[index]
-  if (!state?.checked) return 'border-gray-200'
-  return state.correct ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
+const completeQuiz = () => {
+  isQuizCompleted.value = true
+  const finalScore = Math.round((correctCount.value / props.questions.length) * 100)
+  
+  let message = ''
+  if (finalScore >= 90) {
+    message = '🏆 EXCELLENT! You\'re a Japanese master!'
+  } else if (finalScore >= 70) {
+    message = '🎉 GREAT JOB! Keep up the good work!'
+  } else if (finalScore >= 50) {
+    message = '👍 GOOD EFFORT! Practice makes perfect!'
+  } else {
+    message = '💪 KEEP TRYING! You\'ll get better!'
+  }
+  
+  showNotification(message, 'success')
+  createSuccessParticles()
 }
 
-const getChoiceClass = (questionIndex: number, choiceIndex: number) => {
-  const selected = selectedAnswers.value[questionIndex] === choiceIndex
-  const state = questionStates.value[questionIndex]
-  const isCorrectAnswer = choiceIndex === props.questions[questionIndex].answer
+const restartQuiz = () => {
+  selectedAnswers.value = {}
+  questionStates.value = {}
+  currentQuestionIndex.value = 0
+  isQuizCompleted.value = false
+  showNotification('Quiz restarted! Good luck! 🍀', 'info')
+}
+
+const getChoiceClass = (choiceIndex: number) => {
+  const selected = selectedAnswers.value[currentQuestionIndex.value] === choiceIndex
+  const state = currentQuestionState.value
+  const isCorrectAnswer = currentQuestion.value && choiceIndex === currentQuestion.value.answer
 
   if (!state?.checked) {
-    return selected ? 'border-blue-300 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+    return selected ? 'selected' : ''
   }
 
   if (selected && state.correct) {
-    return 'border-green-400 bg-green-100'
+    return 'correct'
   } else if (selected && !state.correct) {
-    return 'border-red-400 bg-red-100'
+    return 'incorrect'
   } else if (isCorrectAnswer) {
-    return 'border-green-400 bg-green-100'
+    return 'correct'
   }
 
-  return 'border-gray-200 bg-gray-50'
+  return ''
 }
 
-const getChoiceIndicatorClass = (questionIndex: number, choiceIndex: number) => {
-  const selected = selectedAnswers.value[questionIndex] === choiceIndex
-  const state = questionStates.value[questionIndex]
-  const isCorrectAnswer = choiceIndex === props.questions[questionIndex].answer
+const getChoiceIndicatorClass = (choiceIndex: number) => {
+  const selected = selectedAnswers.value[currentQuestionIndex.value] === choiceIndex
+  const state = currentQuestionState.value
+  const isCorrectAnswer = currentQuestion.value && choiceIndex === currentQuestion.value.answer
 
   if (!state?.checked) {
-    return selected ? 'border-blue-500 text-blue-500' : 'border-gray-300'
+    return selected ? 'selected' : ''
   }
 
   if (selected && state.correct) {
-    return 'border-green-500 text-green-500'
+    return 'correct'
   } else if (selected && !state.correct) {
-    return 'border-red-500 text-red-500'
+    return 'incorrect'
   } else if (isCorrectAnswer) {
-    return 'border-green-500 text-green-500'
+    return 'correct'
   }
 
-  return 'border-gray-300'
+  return ''
 }
 
 const getDifficultyClass = (difficulty: string) => {
   switch (difficulty.toLowerCase()) {
     case 'easy':
-      return 'bg-green-100 text-green-800'
+      return 'easy'
     case 'medium':
-      return 'bg-yellow-100 text-yellow-800'
+      return 'medium'
     case 'hard':
-      return 'bg-red-100 text-red-800'
+      return 'hard'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'medium'
   }
 }
 
@@ -257,19 +362,410 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.choice-option {
-  touch-action: manipulation;
-  user-select: none;
+.quiz-section-container {
+  margin-top: 2rem;
 }
 
+/* Quiz Navigation Header */
+.quiz-navigation-header {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.question-counter {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.quiz-progress-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.progress-dots {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--muted);
+  border: 2px solid var(--border);
+  transition: all var(--transition-fast);
+}
+
+.progress-dot.completed {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.progress-dot.attempted {
+  background: var(--destructive);
+  border-color: var(--destructive);
+}
+
+.progress-dot.current {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: scale(1.2);
+}
+
+.progress-text {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+/* Current Question Container */
+.current-question-container {
+  margin-bottom: 2rem;
+}
+
+/* Question Card */
+.question-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-soft);
+  transition: all var(--transition-normal);
+}
+
+.question-header {
+  margin-bottom: 2rem;
+}
+
+.difficulty-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.difficulty-badge.easy {
+  background: color-mix(in srgb, var(--success) 20%, var(--card));
+  color: var(--success);
+}
+
+.difficulty-badge.medium {
+  background: color-mix(in srgb, var(--warning) 20%, var(--card));
+  color: var(--warning);
+}
+
+.difficulty-badge.hard {
+  background: color-mix(in srgb, var(--destructive) 20%, var(--card));
+  color: var(--destructive);
+}
+
+.question-text {
+  font-size: 1.125rem;
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background: var(--muted);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-weight: 500;
+}
+
+/* Answers Grid */
+.answers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.answer-option {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.answer-option:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-glow);
+}
+
+.answer-option.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.answer-option.correct {
+  background: var(--success) !important;
+  border-color: var(--success) !important;
+  color: white !important;
+}
+
+.answer-option.incorrect {
+  background: var(--destructive) !important;
+  border-color: var(--destructive) !important;
+  color: white !important;
+}
+
+.option-label {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.answer-option.selected .option-label {
+  background: var(--primary-foreground);
+  color: var(--primary);
+}
+
+.answer-option.correct .option-label {
+  background: white !important;
+  color: var(--success) !important;
+}
+
+.answer-option.incorrect .option-label {
+  background: white !important;
+  color: var(--destructive) !important;
+}
+
+.option-text {
+  flex: 1;
+  font-size: 1rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.navigation-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-btn {
+  background: var(--muted);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.action-btn.primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.action-btn.primary:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.action-btn.success {
+  background: var(--success);
+  color: white;
+  border-color: var(--success);
+}
+
+.action-btn.success:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--success) 80%, black);
+  border-color: color-mix(in srgb, var(--success) 80%, black);
+}
+
+.action-btn:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border-color: var(--border);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Feedback Section */
+.feedback-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.result-indicator {
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.result-indicator.correct {
+  background: color-mix(in srgb, var(--success) 10%, var(--card));
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+.result-indicator.incorrect {
+  background: color-mix(in srgb, var(--destructive) 10%, var(--card));
+  border: 1px solid var(--destructive);
+  color: var(--destructive);
+}
+
+.result-icon {
+  font-size: 1.25rem;
+}
+
+.result-text {
+  font-weight: 600;
+}
+
+.explanation {
+  background: color-mix(in srgb, var(--primary) 5%, var(--card));
+  border: 1px solid var(--primary);
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+.explanation-title {
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.explanation-text {
+  color: var(--foreground);
+  line-height: 1.6;
+}
+
+/* Quiz Completion */
+.quiz-completion {
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3rem 2rem;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 2rem;
+}
+
+.completion-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 2rem;
+}
+
+.completion-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  min-width: 100px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+/* Quick Navigation */
+.quick-navigation {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .choice-option {
-    padding: 1rem;
-    margin-bottom: 0.75rem;
+  .answers-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
-  
-  .quiz-section {
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .navigation-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .question-card {
     padding: 1rem;
+  }
+
+  .answer-option {
+    padding: 1rem;
+  }
+
+  .completion-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .quiz-navigation-header {
+    padding: 1rem;
+  }
+
+  .progress-dots {
+    justify-content: center;
   }
 }
 </style>

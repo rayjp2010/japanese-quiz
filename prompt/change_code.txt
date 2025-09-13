@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Japanese Learning Quiz - Professional Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+/* Modern Japanese Quiz - Professional Business Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+
+:root {
+  /* Professional Business color scheme - Dark Mode */
+  --background: #0f1419;
+  --foreground: #ffffff;
+  --card: #1a1f2e;
+  --card-foreground: #ffffff;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #64748b;
+  --secondary-foreground: #ffffff;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --border: #334155;
+  --destructive: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+
+  /* Japanese theme colors */
+  --sakura: #3b82f6;
+  --navy: #1e293b;
+  --gold: #f59e0b;
+
+  /* Typography */
+  --font-mono: 'Inter', sans-serif;
+  --font-japanese: 'Noto Sans JP', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+
+  /* Spacing & sizing */
+  --radius: 8px;
+  --spacing: 1rem;
+
+  /* Shadows & effects */
+  --shadow-brutal: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  --shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+  /* Animations */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.3s ease-out;
+  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light mode theme */
+.light-mode {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #f8fafc;
+  --card-foreground: #0f172a;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #64748b;
+  --secondary-foreground: #ffffff;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  --destructive: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  --sakura: #3b82f6;
+  --navy: #1e293b;
+  --gold: #f59e0b;
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  line-height: 1.6 !important;
+  overflow-x: hidden !important;
+  transition: all var(--transition-normal) !important;
+}
+
+/* Typography */
+.japanese-text {
+  font-family: var(--font-japanese) !important;
+  font-weight: 500 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans) !important;
+  font-weight: 600 !important;
+  color: var(--foreground) !important;
+}
+
+/* Header */
+.header-modern {
+  background: var(--card) !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 1.5rem 2rem !important;
+  box-shadow: var(--shadow-soft) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.header-content {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+}
+
+.logo-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+}
+
+.logo-icon {
+  font-size: 1.5rem !important;
+}
+
+.app-title {
+  font-size: 1.5rem !important;
+  color: var(--primary) !important;
+  font-weight: 600 !important;
+}
+
+.header-controls {
+  display: flex !important;
+  gap: 1rem !important;
+}
+
+.control-button {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: var(--radius) !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.control-button:hover {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Main layout */
+.main-container {
+  display: grid !important;
+  grid-template-columns: 2fr 1fr !important;
+  gap: 2rem !important;
+  max-width: 1400px !important;
+  margin: 2rem auto !important;
+  padding: 0 2rem !important;
+  align-items: stretch !important;
+}
+
+/* Video section */
+.video-section {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 2rem !important;
+  box-shadow: var(--shadow-soft) !important;
+  height: 100% !important;
+}
+
+.video-title {
+  font-size: 1.25rem !important;
+  margin-bottom: 1.5rem !important;
+  color: var(--foreground) !important;
+  text-align: center !important;
+  font-weight: 600 !important;
+}
+
+.video-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: 400px !important;
+  margin-bottom: 2rem !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  overflow: hidden !important;
+}
+
+.video-controls {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 1rem !important;
+  flex-wrap: wrap !important;
+}
+
+.control-btn {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: var(--radius) !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+}
+
+.control-btn:hover {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Transcript panel */
+.transcript-panel {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 2rem !important;
+  box-shadow: var(--shadow-soft) !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.transcript-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.transcript-title {
+  color: var(--foreground) !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+}
+
+.transcript-content {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding-right: 0.5rem !important;
+  height: 100% !important;
+}
+
+.transcript-line {
+  display: flex !important;
+  gap: 1rem !important;
+  padding: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+  border-radius: var(--radius) !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+  border: 1px solid transparent !important;
+}
+
+.transcript-line:hover {
+  background: var(--muted) !important;
+  border-color: var(--border) !important;
+}
+
+.transcript-line.active {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+.timestamp {
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+  min-width: 50px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.875rem !important;
+}
+
+.transcript-text {
+  flex: 1 !important;
+}
+
+/* Video controls */
+.video-btn {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: 1px solid var(--primary) !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: var(--radius) !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.video-btn:hover {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+.video-btn:active {
+  transform: translateY(1px) !important;
+}
+
+.video-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* Quiz arena */
+.quiz-arena {
+  max-width: 1400px !important;
+  margin: 3rem auto !important;
+  padding: 0 2rem !important;
+}
+
+.quiz-content {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 2rem !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+.quiz-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 2rem !important;
+  padding-bottom: 1.5rem !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.quiz-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2rem !important;
+}
+
+.question-counter {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: var(--primary) !important;
+}
+
+.quiz-stats {
+  display: flex !important;
+  gap: 2rem !important;
+}
+
+.stat-item {
+  font-weight: 500 !important;
+  color: var(--muted-foreground) !important;
+  font-size: 0.875rem !important;
+}
+
+.stat-value {
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+}
+
+.quiz-btn {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: var(--radius) !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.quiz-btn:hover {
+  background: var(--destructive) !important;
+  color: white !important;
+  border-color: var(--destructive) !important;
+}
+
+/* Question card */
+.question-card {
+  margin-bottom: 2rem !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.question-text {
+  font-size: 1.125rem !important;
+  margin-bottom: 2rem !important;
+  padding: 1.5rem !important;
+  background: var(--muted) !important;
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--border) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.question-audio {
+  cursor: pointer !important;
+  font-size: 1.25rem !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.question-audio:hover {
+  transform: scale(1.1) !important;
+}
+
+/* Answers grid */
+.answers-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  gap: 1rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.answer-option {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 1.5rem !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+}
+
+.answer-option:hover {
+  border-color: var(--primary) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.answer-option.selected {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.answer-option.correct {
+  background: var(--success) !important;
+  border-color: var(--success) !important;
+  color: white !important;
+}
+
+.answer-option.incorrect {
+  background: var(--destructive) !important;
+  border-color: var(--destructive) !important;
+  color: white !important;
+}
+
+.option-label {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  flex-shrink: 0 !important;
+}
+
+.answer-option.selected .option-label {
+  background: var(--primary-foreground) !important;
+  color: var(--primary) !important;
+}
+
+.option-text {
+  flex: 1 !important;
+  font-size: 1rem !important;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 1rem !important;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
+  border-top: 1px solid var(--border) !important;
+}
+
+.action-btn {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: var(--radius) !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.action-btn:hover {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+.action-btn.primary {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+.action-btn.primary:hover {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+.action-btn:disabled {
+  background: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+  border-color: var(--border) !important;
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
+}
+
+.action-btn:disabled:hover {
+  background: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+  border-color: var(--border) !important;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Utility classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-out !important;
+}
+
+.slide-in {
+  animation: slideIn 0.8s ease-out !important;
+}
+
+/* Particle effects */
+.particle-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 9998 !important;
+}
+
+.particle {
+  position: absolute !important;
+  width: 2px !important;
+  height: 2px !important;
+  background: var(--accent) !important;
+  border-radius: 50% !important;
+  animation: particleFall 6s linear infinite !important;
+}
+
+@keyframes particleFall {
+  to {
+    transform: translateY(100vh) !important;
+    opacity: 0 !important;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .video-wrapper {
+    height: 300px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 1rem !important;
+  }
+
+  .main-container {
+    padding: 0 1rem !important;
+    margin: 1rem auto !important;
+  }
+
+  .quiz-arena {
+    padding: 0 1rem !important;
+    margin: 2rem auto !important;
+  }
+
+  .answers-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  .action-buttons {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  .quiz-header {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    text-align: center !important;
+  }
+
+  .quiz-info {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .app-title {
+    font-size: 1.25rem !important;
+  }
+
+  .video-controls {
+    gap: 0.5rem !important;
+  }
+
+  .video-btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-content,
+  .video-section,
+  .transcript-panel {
+    padding: 1rem !important;
+  }
+
+  .question-text {
+    font-size: 1rem !important;
+    padding: 1rem !important;
+  }
+
+  .answer-option {
+    padding: 1rem !important;
+  }
+
+  .action-btn {
+    padding: 0.625rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
+}
+</style>
+    <script src="https://www.youtube.com/iframe_api" async defer></script>
+</head>
+<body class="app-container">
+    <!-- Particle Effects Container -->
+    <div class="particle-container" id="particleContainer"></div>
+
+    <!-- Header -->
+    <header class="header-modern">
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo-icon">📚</div>
+                <h1 class="app-title">Japanese Learning Platform</h1>
+            </div>
+            <div class="header-controls">
+                <button class="control-button theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    🌙
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Video Section -->
+        <section class="video-section fade-in">
+            <div class="video-container">
+                <h2 class="video-title japanese-text">アンジャッシュ バイトの面接</h2>
+                <div class="video-wrapper">
+                    <iframe
+                        id="youtube-player"
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/c8em2Kh5a1c?controls=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1&autoplay=0&fs=1&cc_load_policy=0&disablekb=0"
+                        title="Japanese Learning Video"
+                        frameborder="0"
+                        allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
+                    </iframe>
+                </div>
+                <div class="video-controls">
+                    <button class="video-btn" onclick="togglePlay()" id="playBtn">
+                        <i data-lucide="play"></i> PLAY
+                    </button>
+                    <button class="video-btn" onclick="skipBackward()">
+                        <i data-lucide="skip-back"></i> -10s
+                    </button>
+                    <button class="video-btn" onclick="skipForward()">
+                        <i data-lucide="skip-forward"></i> +10s
+                    </button>
+                    <button class="video-btn" onclick="toggleMute()" id="muteBtn">
+                        <i data-lucide="volume-2"></i> AUDIO
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Transcript Panel -->
+        <aside class="transcript-panel slide-in">
+            <div class="transcript-header">
+                <h3 class="transcript-title">TRANSCRIPT</h3>
+                <div class="transcript-controls">
+                    <button class="control-btn" onclick="toggleTranscript()" id="transcriptToggle">
+                        <i data-lucide="eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="transcript-content" id="transcriptContent">
+                <div class="transcript-line" data-timestamp="15">
+                    <span class="timestamp">00:15</span>
+                    <span class="japanese-text transcript-text">こんにちは！はじめまして。</span>
+                </div>
+                <div class="transcript-line" data-timestamp="18">
+                    <span class="timestamp">00:18</span>
+                    <span class="japanese-text transcript-text">お元気ですか？</span>
+                </div>
+                <div class="transcript-line" data-timestamp="23">
+                    <span class="timestamp">00:23</span>
+                    <span class="japanese-text transcript-text">はい、元気です。ありがとうございます。</span>
+                </div>
+                <div class="transcript-line" data-timestamp="28">
+                    <span class="timestamp">00:28</span>
+                    <span class="japanese-text transcript-text">そうですね。今日はいい天気ですね。</span>
+                </div>
+                <div class="transcript-line" data-timestamp="32">
+                    <span class="timestamp">00:32</span>
+                    <span class="japanese-text transcript-text">でも、仕事がとても忙しいです。</span>
+                </div>
+                <div class="transcript-line" data-timestamp="35">
+                    <span class="timestamp">00:35</span>
+                    <span class="japanese-text transcript-text">毎日、朝から夜まで働いています。</span>
+                </div>
+                <div class="transcript-line" data-timestamp="40">
+                    <span class="timestamp">00:40</span>
+                    <span class="japanese-text transcript-text">大変ですが、やりがいがあります。</span>
+                </div>
+                <div class="transcript-line" data-timestamp="45">
+                    <span class="timestamp">00:45</span>
+                    <span class="japanese-text transcript-text">お疲れ様です。頑張ってくださいね。</span>
+                </div>
+                <div class="transcript-line" data-timestamp="50">
+                    <span class="timestamp">00:50</span>
+                    <span class="japanese-text transcript-text">ありがとうございます。それでは、失礼します。</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Quiz Arena -->
+    <section class="quiz-arena slide-in">
+        <div class="quiz-content">
+            <div class="quiz-header">
+            <div class="quiz-info">
+                <div class="question-counter">QUESTION 3/10</div>
+                <div class="quiz-stats">
+                    <span class="stat-item">CORRECT: <span class="stat-value">6/10</span></span>
+                </div>
+            </div>
+            <div class="quiz-controls">
+                <button class="quiz-btn" onclick="resetQuiz()">
+                    <i data-lucide="rotate-ccw"></i> RESET
+                </button>
+            </div>
+        </div>
+
+        <div class="question-card" id="currentQuestion">
+            <div class="question-text">
+                <span>What did the man say about his job?</span>
+            </div>
+
+            <div class="answers-grid">
+                <div class="answer-option" onclick="selectAnswer(this, 'A')" data-option="A">
+                    <span class="option-label">A</span>
+                    <span class="option-text japanese-text">すごく忙しいです</span>
+                </div>
+                <div class="answer-option" onclick="selectAnswer(this, 'B')" data-option="B">
+                    <span class="option-label">B</span>
+                    <span class="option-text japanese-text">とても楽しいです</span>
+                </div>
+                <div class="answer-option" onclick="selectAnswer(this, 'C')" data-option="C">
+                    <span class="option-label">C</span>
+                    <span class="option-text japanese-text">難しくないです</span>
+                </div>
+                <div class="answer-option" onclick="selectAnswer(this, 'D')" data-option="D">
+                    <span class="option-label">D</span>
+                    <span class="option-text japanese-text">もうすぐ終わります</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="resetCurrentQuestion()">
+                    <i data-lucide="rotate-cw"></i> RESET QUESTION
+                </button>
+                <button class="action-btn primary" onclick="checkAnswer()" id="checkBtn" disabled>
+                    <i data-lucide="check-circle"></i> CHECK ANSWER
+                </button>
+                <button class="action-btn" onclick="nextQuestion()" id="nextBtn" disabled style="display: none;">
+                    <i data-lucide="arrow-right"></i> NEXT
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="quiz-progress">
+            <div class="progress-bar-container" style="background: var(--muted); height: 8px; border-radius: 4px; margin-top: 2rem; overflow: hidden; border: 2px solid var(--border);">
+                <div class="progress-bar-fill" style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 30%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--primary);"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted-foreground);">
+                <span>Progress: 3/10</span>
+                <span>30% Complete</span>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Floating Action Button -->
+    <div class="floating-actions" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;">
+        <button class="control-button" onclick="toggleFullscreen()" title="Fullscreen Mode" style="margin-bottom: 1rem; display: block;">
+            <i data-lucide="maximize"></i>
+        </button>
+        <button class="control-button" onclick="showKeyboardShortcuts()" title="Keyboard Shortcuts">
+            <i data-lucide="keyboard"></i>
+        </button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.9); z-index: 9999; align-items: center; justify-content: center;">
+        <div class="loading-spinner" style="width: 60px; height: 60px; border: 4px solid var(--muted); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    </div>
+
+    <!-- Success/Error Notifications -->
+    <div class="notification-container" id="notifications" style="position: fixed; top: 100px; right: 2rem; z-index: 1001;"></div>
+
+    <script>
+        // Global variables
+        let currentQuestionIndex = 0;
+        let score = 750;
+        let correctAnswers = 6;
+        let totalQuestions = 10;
+        let selectedAnswer = null;
+        let isPlaying = false;
+        let isMuted = false;
+        let player = null;
+        let transcriptVisible = true;
+        let currentTranscriptLine = 0;
+
+        // Sample questions data
+        const questions = [
+            {
+                audio: "question1.mp3",
+                text: "What did the man say about his job?",
+                options: {
+                    A: "すごく忙しいです",
+                    B: "とても楽しいです",
+                    C: "難しくないです",
+                    D: "もうすぐ終わります"
+                },
+                correct: "B",
+                hint: "Listen for words related to feelings about work"
+            },
+            // More questions would be added here
+        ];
+
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            initializeApp();
+        });
+
+        // Initialize the application
+        function initializeApp() {
+            initializeTheme();
+            setupKeyboardShortcuts();
+            updateProgressDisplay();
+            createParticleSystem();
+            setupTranscript();
+            startTranscriptSync();
+            initializeButtonStates();
+        }
+
+        function initializeButtonStates() {
+            // Ensure buttons are properly disabled on app start
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            checkBtn.disabled = true;
+            checkBtn.style.opacity = '0.5';
+            checkBtn.style.cursor = 'not-allowed';
+
+            nextBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            nextBtn.style.opacity = '0.5';
+            nextBtn.style.cursor = 'not-allowed';
+
+            selectedAnswer = null;
+
+            console.log('Button states initialized - checkBtn disabled:', checkBtn.disabled, 'nextBtn disabled:', nextBtn.disabled);
+        }
+
+        // Transcript Functions
+        function setupTranscript() {
+            // Add click handlers for transcript lines
+            document.querySelectorAll('.transcript-line').forEach(line => {
+                line.addEventListener('click', function() {
+                    const timestamp = parseInt(this.dataset.timestamp);
+                    if (player) {
+                        player.seekTo(timestamp);
+                        highlightTranscriptLine(this);
+                    }
+                });
+            });
+
+        }
+
+        function startTranscriptSync() {
+            // Sync transcript with video playback
+            setInterval(() => {
+                if (player && isPlaying) {
+                    const currentTime = Math.floor(player.getCurrentTime());
+                    updateTranscriptHighlight(currentTime);
+                }
+            }, 500); // Check every 500ms
+        }
+
+        function updateTranscriptHighlight(currentTime) {
+            const transcriptLines = document.querySelectorAll('.transcript-line');
+            let activeLineIndex = -1;
+
+            // Find the current active line based on timestamp
+            transcriptLines.forEach((line, index) => {
+                const timestamp = parseInt(line.dataset.timestamp);
+                const nextTimestamp = index < transcriptLines.length - 1 ?
+                    parseInt(transcriptLines[index + 1].dataset.timestamp) : Infinity;
+
+                if (currentTime >= timestamp && currentTime < nextTimestamp) {
+                    activeLineIndex = index;
+                }
+            });
+
+            // Update highlighting
+            transcriptLines.forEach((line, index) => {
+                line.classList.remove('active');
+                if (index === activeLineIndex) {
+                    line.classList.add('active');
+                    // Auto-scroll to active line
+                    scrollToTranscriptLine(line);
+                }
+            });
+
+            currentTranscriptLine = activeLineIndex;
+        }
+
+        function scrollToTranscriptLine(line) {
+            const transcriptContent = document.getElementById('transcriptContent');
+            const lineTop = line.offsetTop;
+            const containerHeight = transcriptContent.clientHeight;
+            const lineHeight = line.offsetHeight;
+
+            // Calculate scroll position to center the line
+            const scrollPosition = lineTop - (containerHeight / 2) + (lineHeight / 2);
+
+            transcriptContent.scrollTo({
+                top: Math.max(0, scrollPosition),
+                behavior: 'smooth'
+            });
+        }
+
+        function highlightTranscriptLine(line) {
+            // Remove previous highlights
+            document.querySelectorAll('.transcript-line').forEach(l => {
+                l.classList.remove('active');
+            });
+
+            // Add highlight to clicked line
+            line.classList.add('active');
+            showNotification('🎯 Jumped to timestamp', 'info');
+        }
+
+        function toggleTranscript() {
+            const transcriptContent = document.getElementById('transcriptContent');
+            const toggleBtn = document.getElementById('transcriptToggle');
+
+            transcriptVisible = !transcriptVisible;
+
+            if (transcriptVisible) {
+                transcriptContent.style.display = 'block';
+                toggleBtn.innerHTML = '<i data-lucide="eye"></i>';
+                showNotification('👁️ Transcript shown', 'info');
+            } else {
+                transcriptContent.style.display = 'none';
+                toggleBtn.innerHTML = '<i data-lucide="eye-off"></i>';
+                showNotification('🙈 Transcript hidden', 'info');
+            }
+
+            lucide.createIcons();
+        }
+
+
+        // YouTube Player API
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            console.log('YouTube player ready');
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                updatePlayButton();
+            } else if (event.data == YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                updatePlayButton();
+            }
+        }
+
+        // Video controls
+        function togglePlay() {
+            if (!player) return;
+
+            if (isPlaying) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+        }
+
+        function updatePlayButton() {
+            const playBtn = document.getElementById('playBtn');
+            if (isPlaying) {
+                playBtn.innerHTML = '<i data-lucide="pause"></i> PAUSE';
+            } else {
+                playBtn.innerHTML = '<i data-lucide="play"></i> PLAY';
+            }
+            lucide.createIcons();
+        }
+
+        function skipBackward() {
+            if (player) {
+                const currentTime = player.getCurrentTime();
+                player.seekTo(Math.max(0, currentTime - 10));
+            }
+        }
+
+        function skipForward() {
+            if (player) {
+                const currentTime = player.getCurrentTime();
+                player.seekTo(currentTime + 10);
+            }
+        }
+
+        function toggleMute() {
+            if (!player) return;
+
+            if (isMuted) {
+                player.unMute();
+                isMuted = false;
+                document.getElementById('muteBtn').innerHTML = '<i data-lucide="volume-2"></i> AUDIO';
+            } else {
+                player.mute();
+                isMuted = true;
+                document.getElementById('muteBtn').innerHTML = '<i data-lucide="volume-x"></i> MUTED';
+            }
+            lucide.createIcons();
+        }
+
+        // Quiz functionality
+        function selectAnswer(element, option) {
+            // Don't allow selection if answer has been checked
+            if (document.querySelector('.answer-option.correct') || document.querySelector('.answer-option.incorrect')) {
+                return;
+            }
+
+            // Remove previous selections
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // Select new option
+            element.classList.add('selected');
+            selectedAnswer = option;
+
+            // Enable check answer button with proper styling
+            const checkBtn = document.getElementById('checkBtn');
+            checkBtn.disabled = false;
+            checkBtn.style.opacity = '1';
+            checkBtn.style.cursor = 'pointer';
+
+            // Add interaction effect
+            element.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                element.style.transform = '';
+            }, 200);
+        }
+
+        function checkAnswer() {
+            if (!selectedAnswer) {
+                showNotification('Please select an answer!', 'error');
+                return;
+            }
+
+            const currentQuestion = questions[currentQuestionIndex];
+            const isCorrect = selectedAnswer === currentQuestion.correct;
+
+            // Show answer feedback
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                const optionLetter = opt.dataset.option;
+                if (optionLetter === currentQuestion.correct) {
+                    opt.classList.add('correct');
+                } else if (optionLetter === selectedAnswer && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (isCorrect) {
+                correctAnswers++;
+                score += 100;
+                createSuccessParticles();
+                showNotification('Correct! Great job! 🎉', 'success');
+            } else {
+                showNotification('Incorrect. The correct answer is highlighted.', 'error');
+            }
+
+            // Hide check button and show next button
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            checkBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-flex';
+            nextBtn.disabled = false;
+            nextBtn.style.opacity = '1';
+            nextBtn.style.cursor = 'pointer';
+
+            // Update stats immediately
+            updateProgressDisplay();
+        }
+
+        function nextQuestion() {
+            // Move to next question
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadNextQuestion();
+            } else {
+                completeQuiz();
+            }
+        }
+
+        function loadNextQuestion() {
+            // Reset question display
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            selectedAnswer = null;
+
+            // Reset buttons to initial state
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            checkBtn.disabled = true;
+            checkBtn.style.display = 'inline-flex';
+            checkBtn.style.opacity = '0.5';
+            checkBtn.style.cursor = 'not-allowed';
+
+            nextBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            nextBtn.style.opacity = '0.5';
+            nextBtn.style.cursor = 'not-allowed';
+
+            // Update question counter
+            document.querySelector('.question-counter').textContent = `QUESTION ${currentQuestionIndex + 1}/${totalQuestions}`;
+
+            // Animation for new question
+            const questionCard = document.getElementById('currentQuestion');
+            questionCard.style.opacity = '0';
+            questionCard.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                // Load new question content here
+                questionCard.style.opacity = '1';
+                questionCard.style.transform = 'translateY(0)';
+            }, 300);
+        }
+
+        function updateProgressDisplay() {
+            // Update quiz header stats
+            const statValue = document.querySelector('.stat-value');
+            if (statValue) {
+                statValue.textContent = `${correctAnswers}/${totalQuestions}`;
+            }
+
+            // Update progress bar
+            const progressBarFill = document.querySelector('.progress-bar-fill');
+            if (progressBarFill) {
+                const questionProgress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+                progressBarFill.style.width = `${questionProgress}%`;
+
+                // Update progress text
+                const progressSection = document.querySelector('.quiz-progress');
+                if (progressSection) {
+                    progressSection.lastElementChild.innerHTML = `
+                        <span>Progress: ${currentQuestionIndex + 1}/${totalQuestions}</span>
+                        <span>${Math.round(questionProgress)}% Complete</span>
+                    `;
+                }
+            }
+        }
+
+
+        function resetCurrentQuestion() {
+            // Reset the current question's selected answers
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            selectedAnswer = null;
+
+            // Reset buttons to initial state
+            const checkBtn = document.getElementById('checkBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            checkBtn.disabled = true;
+            checkBtn.style.display = 'inline-flex';
+            checkBtn.style.opacity = '0.5';
+            checkBtn.style.cursor = 'not-allowed';
+
+            nextBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            nextBtn.style.opacity = '0.5';
+            nextBtn.style.cursor = 'not-allowed';
+
+            showNotification('🔄 Question reset! Select your answer again.', 'info');
+        }
+
+        // Enhanced professional particle effect for correct answers
+        function createSuccessParticles() {
+            const container = document.getElementById('particleContainer');
+
+            // Create more obvious and impressive particle bursts
+            const burstTypes = ['gentle', 'rise', 'sparkle', 'confetti', 'stars'];
+
+            for (let burst = 0; burst < 5; burst++) {
+                setTimeout(() => {
+                    const burstType = burstTypes[burst % burstTypes.length];
+                    const centerX = Math.random() * (window.innerWidth - 200) + 100;
+                    const centerY = Math.random() * (window.innerHeight / 3) + 100;
+
+                    createProfessionalBurst(container, burstType, centerX, centerY);
+                }, burst * 200);
+            }
+
+            // Add screen-wide celebration effect
+            createCelebrationOverlay();
+        }
+
+        function createProfessionalBurst(container, type, centerX, centerY) {
+            const colors = ['#2563eb', '#1d4ed8', '#1e40af', '#3b82f6', '#60a5fa', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b'];
+
+            switch(type) {
+                case 'gentle':
+                    createGentleBurst(container, colors, centerX, centerY);
+                    break;
+                case 'rise':
+                    createRiseBurst(container, colors, centerX, centerY);
+                    break;
+                case 'sparkle':
+                    createSparkleBurst(container, colors, centerX, centerY);
+                    break;
+                case 'confetti':
+                    createConfettiBurst(container, colors, centerX, centerY);
+                    break;
+                case 'stars':
+                    createStarsBurst(container, colors, centerX, centerY);
+                    break;
+            }
+        }
+
+        function createConfettiBurst(container, colors, centerX, centerY) {
+            const shapes = ['🎉', '🎊', '🏆', '⚡', '💎', '🌈'];
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+
+                particle.innerHTML = shape;
+                particle.style.cssText = `
+                    position: fixed;
+                    font-size: ${Math.random() * 20 + 15}px;
+                    pointer-events: none;
+                    z-index: 9999;
+                    left: ${centerX + Math.random() * 300 - 150}px;
+                    top: ${centerY - 50}px;
+                `;
+
+                container.appendChild(particle);
+
+                const fallDistance = Math.random() * 400 + 200;
+                const sway = Math.random() * 100 - 50;
+
+                particle.animate([
+                    {
+                        transform: 'translateY(0) translateX(0) rotate(0deg)',
+                        opacity: 1
+                    },
+                    {
+                        transform: `translateY(${fallDistance}px) translateX(${sway}px) rotate(360deg)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: 3000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        function createStarsBurst(container, colors, centerX, centerY) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                particle.innerHTML = '⭐';
+                particle.style.cssText = `
+                    position: fixed;
+                    color: ${color};
+                    font-size: ${Math.random() * 30 + 20}px;
+                    pointer-events: none;
+                    z-index: 9999;
+                    left: ${centerX}px;
+                    top: ${centerY}px;
+                    filter: drop-shadow(0 0 10px ${color});
+                `;
+
+                container.appendChild(particle);
+
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = Math.random() * 200 + 100;
+                const endX = Math.cos(angle) * distance;
+                const endY = Math.sin(angle) * distance;
+
+                particle.animate([
+                    {
+                        transform: 'translate(0, 0) scale(0) rotate(0deg)',
+                        opacity: 0
+                    },
+                    {
+                        transform: 'translate(0, 0) scale(1) rotate(180deg)',
+                        opacity: 1,
+                        offset: 0.3
+                    },
+                    {
+                        transform: `translate(${endX}px, ${endY}px) scale(0) rotate(720deg)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: 2500,
+                    easing: 'ease-out'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        function createCelebrationOverlay() {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(45deg, rgba(37, 99, 235, 0.1), rgba(59, 130, 246, 0.1));
+                z-index: 9998;
+                pointer-events: none;
+            `;
+
+            document.body.appendChild(overlay);
+
+            overlay.animate([
+                { opacity: 0 },
+                { opacity: 1 },
+                { opacity: 0 }
+            ], {
+                duration: 1000,
+                easing: 'ease-in-out'
+            }).onfinish = () => overlay.remove();
+        }
+
+        function createGentleBurst(container, colors, centerX, centerY) {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 8 + 4;
+
+                const angle = (i / 20) * Math.PI * 2;
+                const velocity = Math.random() * 120 + 80;
+                const endX = centerX + Math.cos(angle) * velocity;
+                const endY = centerY + Math.sin(angle) * velocity;
+
+                particle.style.cssText = `
+                    position: fixed;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: ${color};
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 9999;
+                    opacity: 1;
+                    left: ${centerX}px;
+                    top: ${centerY}px;
+                    box-shadow: 0 0 10px ${color};
+                `;
+
+                container.appendChild(particle);
+
+                particle.animate([
+                    {
+                        transform: 'translate(0, 0) scale(1)',
+                        opacity: 1
+                    },
+                    {
+                        transform: `translate(${endX - centerX}px, ${endY - centerY}px) scale(0)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: 2000,
+                    easing: 'ease-out'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        function createRiseBurst(container, colors, centerX, centerY) {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const size = Math.random() * 6 + 3;
+
+                    particle.style.cssText = `
+                        position: fixed;
+                        width: ${size}px;
+                        height: ${size}px;
+                        background: ${color};
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 9999;
+                        opacity: 1;
+                        left: ${centerX + Math.random() * 80 - 40}px;
+                        top: ${centerY}px;
+                        box-shadow: 0 0 15px ${color};
+                    `;
+
+                    container.appendChild(particle);
+
+                    particle.animate([
+                        { transform: 'translateY(0)', opacity: 1 },
+                        { transform: 'translateY(-250px)', opacity: 0 }
+                    ], {
+                        duration: 3000,
+                        easing: 'ease-out'
+                    }).onfinish = () => particle.remove();
+                }, i * 80);
+            }
+        }
+
+        function createSparkleBurst(container, colors, centerX, centerY) {
+            const sparkleShapes = ['✦', '✨', '⭐', '🌟', '💫', '✧'];
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const shape = sparkleShapes[Math.floor(Math.random() * sparkleShapes.length)];
+
+                particle.innerHTML = shape;
+                particle.style.cssText = `
+                    position: fixed;
+                    color: ${color};
+                    font-size: ${Math.random() * 24 + 16}px;
+                    pointer-events: none;
+                    z-index: 9999;
+                    left: ${centerX + Math.random() * 200 - 100}px;
+                    top: ${centerY + Math.random() * 200 - 100}px;
+                    text-shadow: 0 0 10px ${color};
+                `;
+
+                container.appendChild(particle);
+
+                particle.animate([
+                    {
+                        transform: 'scale(0) rotate(0deg)',
+                        opacity: 1
+                    },
+                    {
+                        transform: 'scale(2) rotate(360deg)',
+                        opacity: 0
+                    }
+                ], {
+                    duration: 2000,
+                    easing: 'ease-out'
+                }).onfinish = () => particle.remove();
+            }
+        }
+
+        function createParticleSystem() {
+            // Initialize subtle background particle system
+            const container = document.getElementById('particleContainer');
+
+            setInterval(() => {
+                if (Math.random() < 0.05) { // 5% chance each interval
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = '-10px';
+                    particle.style.background = 'var(--accent)';
+                    particle.style.opacity = '0.1';
+                    particle.style.animationDuration = '6s';
+
+                    container.appendChild(particle);
+
+                    setTimeout(() => particle.remove(), 6000);
+                }
+            }, 400);
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notifications');
+            const notification = document.createElement('div');
+
+            const colors = {
+                success: 'var(--success)',
+                error: 'var(--destructive)',
+                info: 'var(--secondary)',
+                warning: 'var(--warning)'
+            };
+
+            notification.style.cssText = `
+                background: ${colors[type]};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--radius);
+                margin-bottom: 0.5rem;
+                box-shadow: var(--shadow-soft);
+                font-weight: 500;
+                font-size: 0.9rem;
+                animation: slideIn 0.3s ease-out;
+                cursor: pointer;
+            `;
+
+            notification.textContent = message;
+            notification.onclick = () => notification.remove();
+
+            container.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+
+        // Theme management
+        function initializeTheme() {
+            // Check for saved theme preference or default to dark mode
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
+                document.body.classList.add('light-mode');
+            }
+
+            updateThemeButton();
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLightMode = document.body.classList.contains('light-mode');
+
+            // Save theme preference
+            localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
+
+            updateThemeButton();
+            showNotification(`🎨 Switched to ${isLightMode ? 'light' : 'dark'} mode`, 'info');
+        }
+
+        function updateThemeButton() {
+            const themeBtn = document.querySelector('.theme-toggle');
+            const isLightMode = document.body.classList.contains('light-mode');
+            themeBtn.textContent = isLightMode ? '☀️' : '🌙';
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+
+        function resetQuiz() {
+            if (confirm('Are you sure you want to reset the quiz?')) {
+                currentQuestionIndex = 0;
+                correctAnswers = 0;
+                score = 0;
+                selectedAnswer = null;
+                updateProgressDisplay();
+                loadNextQuestion();
+                showNotification('🔄 Quiz reset successfully', 'info');
+            }
+        }
+
+        function completeQuiz() {
+            const finalScore = Math.round((correctAnswers / totalQuestions) * 100);
+            let message = '';
+
+            if (finalScore >= 90) {
+                message = '🏆 EXCELLENT! You\'re a Japanese master!';
+            } else if (finalScore >= 70) {
+                message = '🎉 GREAT JOB! Keep up the good work!';
+            } else if (finalScore >= 50) {
+                message = '👍 GOOD EFFORT! Practice makes perfect!';
+            } else {
+                message = '💪 KEEP TRYING! You\'ll get better!';
+            }
+
+            showNotification(message, 'success');
+            createSuccessParticles();
+        }
+
+        function showKeyboardShortcuts() {
+            const shortcuts = `
+                Keyboard Shortcuts:
+                Space - Play/Pause video
+                ← → - Skip backward/forward
+                1,2,3,4 - Select answers A,B,C,D
+                Enter - Next question
+                H - Show hint
+                R - Replay audio
+                F - Toggle fullscreen
+            `;
+            alert(shortcuts);
+        }
+
+        // Keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case ' ':
+                        e.preventDefault();
+                        togglePlay();
+                        break;
+                    case 'ArrowLeft':
+                        skipBackward();
+                        break;
+                    case 'ArrowRight':
+                        skipForward();
+                        break;
+                    case '1':
+                        selectAnswerByKey('A');
+                        break;
+                    case '2':
+                        selectAnswerByKey('B');
+                        break;
+                    case '3':
+                        selectAnswerByKey('C');
+                        break;
+                    case '4':
+                        selectAnswerByKey('D');
+                        break;
+                    case 'Enter':
+                        if (!document.getElementById('nextBtn').disabled) {
+                            nextQuestion();
+                        }
+                        break;
+                    case 'r':
+                    case 'R':
+                        resetCurrentQuestion();
+                        break;
+                    case 'f':
+                    case 'F':
+                        toggleFullscreen();
+                        break;
+                }
+            });
+        }
+
+        function selectAnswerByKey(option) {
+            const optionElement = document.querySelector(`[data-option="${option}"]`);
+            if (optionElement) {
+                selectAnswer(optionElement, option);
+            }
+        }
+
+        // Loading animation
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'none';
+        }
+
+        // Add loading spinner animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+
+Above is the refactored design implemntation of this website. Please use this as a reference to change the style of the whole site. Focus on clean, maintainable code structure.
+Try to achieve all styles in the design, but **DO NOT** write code that is difficult to maintain.
